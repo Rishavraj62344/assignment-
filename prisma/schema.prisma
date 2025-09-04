@@ -1,0 +1,91 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id          String    @id @default(cuid())
+  companyName String
+  address     String?
+  email       String
+  phoneNumber String
+  createdAt   DateTime  @default(now())
+  empInfo     Employee[]
+
+  @@map("companies")
+}
+
+model Employee {
+  id            String       @id @default(cuid())
+  companyId     String
+  empName       String
+  designation   Designation
+  joinDate      DateTime
+  email         String
+  phoneNumber   String
+  skillInfo     Skill[]
+  educationInfo Education[]
+  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("employees")
+}
+
+model Skill {
+  id          String @id @default(cuid())
+  employeeId  String
+  skillName   SkillName
+  skillRating Int
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("skills")
+}
+
+model Education {
+  id            String   @id @default(cuid())
+  employeeId    String
+  instituteName String
+  courseName    String
+  completedYear String
+  employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("educations")
+}
+
+enum Designation {
+  Developer
+  Manager
+  SystemAdmin
+  TeamLead
+  PM
+}
+
+enum SkillName {
+  Java
+  Angular
+  CSS
+  HTML
+  JavaScript
+  UI
+  SQL
+  React
+  PHP
+  GIT
+  AWS
+  Python
+  Django
+  C
+  CPlusPlus
+  CSharp
+  Unity
+  R
+  AI
+  NLP
+  Photoshop
+  NodeJS
+}
